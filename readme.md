@@ -136,7 +136,7 @@ Licença
 
 Contato
 
-- Mantenedor: seu-email@exemplo.com
+- Mantenedor: @TTVTheAgregado
 
 Observações finais
 Adapte os exemplos ao framework e às dependências do seu projeto. Posso gerar um README específico para Node/Express ou FastAPI com instruções detalhadas se quiser.
