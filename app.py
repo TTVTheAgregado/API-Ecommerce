@@ -48,6 +48,29 @@ def get_product_details(product_id):
         return jsonify(product_data), 200
     return jsonify({"message": "Product Not Found"}), 404
 
+
+@app.route('/api/products/update/<int:product_id>', methods=["PUT"])
+def update_product(prodcut_id):
+    product = Product.query.get(product_id)  # Recuperar o produto pelo ID
+    if not product:  # Verificar se o produto existe
+        return jsonify({"message": "Product Not Found"}), 404
+    
+    data = request.json
+    if 'name' in data:
+        product.name = data['name']
+
+    if 'price' in data:
+        product.price = data['price']
+
+    if 'description' in data:
+        product.descripition = data['description']
+
+    db.session.commit()  # Confirmar a transação
+
+    return jsonify({"message": "Product Updated Successfully"})
+
+
+
 # Definir uma rota para a página inicial e uma função que será executada ao requisitar
 @app.route('/')
 def hello_world():
