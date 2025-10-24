@@ -19,7 +19,7 @@ class Product(db.Model):
 def add_product():
     data = request.json
     if 'name' in data and 'price' in data:
-        product = Product(name=data['name'], price=data['price'], descripition=data.get('descripition'))
+        product = Product(name=data['name'], price=data['price'], descripition=data.get('description'))
         db.session.add(product)
         db.session.commit()
         return jsonify({"message": "Product Added Sucessufol"}), 201
@@ -35,7 +35,18 @@ def delete_product(product_id):
         return jsonify({"message": "Product Deleted Successfully"}), 200 
     return jsonify({"message": "Product Not Found"}), 404
 
-
+@app.route('/api/products/<int:product_id>', methods=["GET"])
+def get_product_details(product_id):
+    product = Product.query.get(product_id)  # Recuperar o produto pelo ID
+    if product:  # Verificar se o produto existe
+        product_data = {
+            "id": product.id,
+            "name": product.name,
+            "price": product.price,
+            "descripition": product.descripition
+        }
+        return jsonify(product_data), 200
+    return jsonify({"message": "Product Not Found"}), 404
 
 # Definir uma rota para a página inicial e uma função que será executada ao requisitar
 @app.route('/')
