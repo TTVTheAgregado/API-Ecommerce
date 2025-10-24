@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_login import UserMixin
 
 app = Flask(__name__)   
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ecommerce.db'  # Configuração do banco de dados SQLite
@@ -9,6 +10,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ecommerce.db'  # Configuraç�
 
 db = SQLAlchemy(app)  # Inicialização do SQLAlchemy com a aplicação Flask
 CORS(app)  # Habilitar CORS para a aplicação Flask
+
+# Modelagem de exemplo para um usuário
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
 
 # Modelagem de exemplo para um produto
 class Product(db.Model):
