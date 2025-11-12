@@ -2,7 +2,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from flask_login import UserMixin, login_user, LoginManager
+from flask_login import UserMixin, login_user, LoginManager, login_required
 
 app = Flask(__name__)   
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ecommerce.db'  # Configuração do banco de dados SQLite
@@ -27,6 +27,11 @@ class Product(db.Model):
     price = db.Column(db.Float, nullable=False)
     descripition = db.Column(db.Text, nullable=True)
 
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 @app.route('/login', methods=["POST"])
 def login(): 
     data = request.json
@@ -38,7 +43,10 @@ def login():
         return jsonify({"message": "Login Successful"}), 200
     return jsonify({"message": "Invalid Credentials"}), 401
 
+
+
 @app.route('/api/products/add', methods=["POST"])
+@login_required
 def add_product():
     data = request.json
     if 'name' in data and 'price' in data:
@@ -50,6 +58,7 @@ def add_product():
 
 
 @app.route('/api/products/delete/<int:product_id>', methods=["DELETE"])
+@login_required
 def delete_product(product_id):
     product = Product.query.get(product_id) #Recuperar o Produto pelo ID
     if product: #Verificar se o produto existe
@@ -73,6 +82,7 @@ def get_product_details(product_id):
 
 
 @app.route('/api/products/update/<int:product_id>', methods=["PUT"])
+@login_required
 def update_product(prodcut_id):
     product = Product.query.get(product_id)  # Recuperar o produto pelo ID
     if not product:  # Verificar se o produto existe
